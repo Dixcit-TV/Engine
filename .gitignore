@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+/.vs
+/App/x64
+/Engine/x64
+/packages
+/x64
+App/App.vcxproj.user
+Engine/Engine.vcxproj.user
