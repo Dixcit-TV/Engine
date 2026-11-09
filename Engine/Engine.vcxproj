@@ -13,9 +13,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\Application.h" />
+    <ClInclude Include="Gameplay\Camera.h" />
     <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\MathHelpers.h" />
+    <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Misc\EnumHelpers.h" />
+    <ClInclude Include="Renderer\RenderResource.h" />
     <ClInclude Include="Renderer\RenderScene.h" />
     <ClInclude Include="RHI\DX12RHI\DX12Resource.h" />
     <ClInclude Include="RHI\DX12RHI\DX12RHI.h" />
@@ -30,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\Application.cpp" />
+    <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Math\MathHelpers.cpp" />
     <ClCompile Include="Renderer\RenderScene.cpp" />
     <ClCompile Include="RHI\DX12RHI\DX12RHI.cpp" />

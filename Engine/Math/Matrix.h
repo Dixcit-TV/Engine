@@ -8,6 +8,30 @@ struct MatrixType
 	Type Data[N][M];
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
+	inline MatrixType(const MatrixType<OtherType, M, N>& Other)
+	{
+		for (int R = 0; R < N; ++R)
+		{
+			for (int C = 0; C < M; ++C)
+			{
+				Data[R][C] = static_cast<Type>(Other.Data[R][C]);
+			}
+		}
+	}
+
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
+	inline MatrixType(MatrixType<OtherType, M, N>&& Other)
+	{
+		for (int C = 0; C < M; ++C)
+		{
+			for (int R = 0; R < N; ++R)
+			{
+				Data[R][C] = static_cast<Type>(Other.Data[R][C]);
+			}
+		}
+	}
+
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType& operator=(const MatrixType<OtherType, M, N>& Other)
 	{
 		for (int R = 0; R < N; ++R)
@@ -182,13 +206,13 @@ struct MatrixType<Type, 2, 2>
 	{
 	};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(const MatrixType<OtherType, 2, 2>& Other)
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11))
 	{};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(MatrixType<OtherType, 2, 2>&& Other)
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11))
@@ -290,14 +314,14 @@ struct MatrixType<Type, 3, 3>
 		, M20(inV3.X), M21(inV3.Y), M22(inV3.Z)
 	{};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(const MatrixType<OtherType, 3, 3>& Other)
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01)), M02(static_cast<Type>(Other.M02))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11)), M12(static_cast<Type>(Other.M12))
 		, M20(static_cast<Type>(Other.M20)), M21(static_cast<Type>(Other.M21)), M22(static_cast<Type>(Other.M22))
 	{};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(MatrixType<OtherType, 3, 3>&& Other)
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01)), M02(static_cast<Type>(Other.M02))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11)), M12(static_cast<Type>(Other.M12))
@@ -416,7 +440,7 @@ struct MatrixType<Type, 4, 4>
 	{
 	};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(const MatrixType<OtherType, 4, 4>& Other) 
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01)), M02(static_cast<Type>(Other.M02)), M03(static_cast<Type>(Other.M03))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11)), M12(static_cast<Type>(Other.M12)), M13(static_cast<Type>(Other.M13))
@@ -424,7 +448,7 @@ struct MatrixType<Type, 4, 4>
 		, M30(static_cast<Type>(Other.M30)), M31(static_cast<Type>(Other.M31)), M32(static_cast<Type>(Other.M32)), M33(static_cast<Type>(Other.M33))
 	{};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline MatrixType(MatrixType<OtherType, 4, 4>&& Other)
 		: M00(static_cast<Type>(Other.M00)), M01(static_cast<Type>(Other.M01)), M02(static_cast<Type>(Other.M02)), M03(static_cast<Type>(Other.M03))
 		, M10(static_cast<Type>(Other.M10)), M11(static_cast<Type>(Other.M11)), M12(static_cast<Type>(Other.M12)), M13(static_cast<Type>(Other.M13))
@@ -514,7 +538,7 @@ struct MatrixType<Type, 4, 4>
 		Inverse.M33 = M00 * M11 * M22 - M00 * M12 * M21 - M10 * M01 * M22 + M10 * M02 * M21 + M20 * M01 * M12 - M20 * M02 * M11;
 
 		const double Det = double(M00) * Inverse.M00 + double(M01) * Inverse.M10 + double(M02) * Inverse.M20 + double(M03) * Inverse.M30;
-		if (std::abs(Det) < std::numeric_limits<double>::epsilon())
+		if (abs(Det) < std::numeric_limits<double>::epsilon())
 		{
 			return MatrixType<Type, 4, 4>::Indentity;
 		}

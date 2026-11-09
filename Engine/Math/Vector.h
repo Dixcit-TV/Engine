@@ -1,5 +1,7 @@
 #pragma once
+#include <math.h>
 #include <type_traits>
+#include <limits>
 
 template<typename Type, int M, typename = std::enable_if_t<std::is_arithmetic_v<Type>, Type>>
 struct VectorType;
@@ -25,9 +27,9 @@ struct VectorType<Type, 2>
 	inline VectorType(Type Value = 0) : X(Value), Y(Value) {};
 	inline VectorType(Type inX, Type inY) : X(inX), Y(inY) {};
 
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(const VectorType<OtherType, 2>& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)) {}
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(VectorType<OtherType, 2>&& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)) {}
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
@@ -47,27 +49,47 @@ struct VectorType<Type, 2>
 	}
 
 	template<typename OtherType>
-	inline auto Cross(const VectorType<OtherType, 2>& Other)
+	inline auto Cross(const VectorType<OtherType, 2>& Other) const
 	{
 		return X * static_cast<Type>(Other.Y) - Y * static_cast<Type>(Other.X);
 	}
 
 	template<typename OtherType>
-	inline auto Project(const VectorType<OtherType, 2>& Other)
+	inline auto Project(const VectorType<OtherType, 2>& Other) const
 	{
 		return VectorType(Other) * (Dot(*this, Other) / Dot(Other, Other));
 	}
 
 	template<typename OtherType>
-	inline auto Reject(const VectorType<OtherType, 2>& Other)
+	inline auto Reject(const VectorType<OtherType, 2>& Other) const
 	{
 		return *this - Project(Other);
 	}
 
 	template<typename OtherType>
-	inline auto Reflect(const VectorType<OtherType, 2>& N)
+	inline auto Reflect(const VectorType<OtherType, 2>& N) const
 	{
 		return *this - (2 * (Dot(*this, N)) * N);
+	}
+
+	inline void Normalize()
+	{
+		VectorType& ThisVector = *this;
+		const double D = Dot(ThisVector, ThisVector);
+		if (D < std::numeric_limits<double>::epsilon())
+		{
+			ThisVector = VectorType::Zero;
+			return;
+		}
+
+		ThisVector /= sqrt(D);
+	}
+
+	inline auto GetNormalized() const
+	{
+		VectorType Res = *this;
+		Res.Normalize();
+		return Res;
 	}
 };
 
@@ -104,9 +126,10 @@ struct VectorType<Type, 3>
 
 	template<typename OtherType>
 	inline VectorType(const VectorType<OtherType, 2>& inVector, Type inZ = static_cast<Type>(0)) : X(static_cast<Type>(inVector.X)), Y(static_cast<Type>(inVector.Y)), Z(inZ){}
-	template<typename OtherType>
+
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(const VectorType<OtherType, 3>& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)) {}
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(VectorType<OtherType, 3>&& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)) {}
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
@@ -128,7 +151,7 @@ struct VectorType<Type, 3>
 	}
 
 	template<typename OtherType>
-	inline auto Cross(const VectorType<OtherType, 3>& Other)
+	inline auto Cross(const VectorType<OtherType, 3>& Other) const
 	{
 		return VectorType(
 			Y * static_cast<Type>(Other.Z) - Z * static_cast<Type>(Other.Y)
@@ -138,21 +161,41 @@ struct VectorType<Type, 3>
 	}
 
 	template<typename OtherType>
-	inline auto Project(const VectorType<OtherType, 3>& Other)
+	inline auto Project(const VectorType<OtherType, 3>& Other) const
 	{
 		return VectorType(Other) * (Dot(*this, Other) / Dot(Other, Other));
 	}
 
 	template<typename OtherType>
-	inline auto Reject(const VectorType<OtherType, 3>& Other)
+	inline auto Reject(const VectorType<OtherType, 3>& Other) const
 	{
 		return *this - Project(Other);
 	}
 
 	template<typename OtherType>
-	inline auto Reflect(const VectorType<OtherType, 3>& N)
+	inline auto Reflect(const VectorType<OtherType, 3>& N) const
 	{
 		return *this - (2 * (Dot(*this, N)) * N);
+	}
+
+	inline void Normalize()
+	{
+		VectorType& ThisVector = *this;
+		const double D = Dot(ThisVector, ThisVector);
+		if (D < std::numeric_limits<double>::epsilon())
+		{
+			ThisVector = VectorType::Zero;
+			return;
+		}
+		
+		ThisVector /= sqrt(D);
+	}
+
+	inline auto GetNormalized() const
+	{
+		VectorType Res = *this;
+		Res.Normalize();
+		return Res;
 	}
 };
 
@@ -194,9 +237,10 @@ struct VectorType<Type, 4>
 	inline VectorType(const VectorType<OtherType, 2>& inVector, Type inZ = static_cast<Type>(0), Type inW = static_cast<Type>(0)) : X(static_cast<Type>(inVector.X)), Y(static_cast<Type>(inVector.Y)), Z(inZ), W(inW) {}
 	template<typename OtherType>
 	inline VectorType(const VectorType<OtherType, 3>& inVector, Type inW = static_cast<Type>(0)) : X(static_cast<Type>(inVector.X)), Y(static_cast<Type>(inVector.Y)), Z(static_cast<Type>(inVector.Z)), W(inW) {}
-	template<typename OtherType>
+
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(const VectorType<OtherType, 4>& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)), W(static_cast<Type>(Other.W)) {}
-	template<typename OtherType>
+	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(VectorType<OtherType,4>&& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)) , W(static_cast<Type>(Other.W)) {}
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
@@ -232,7 +276,7 @@ template<typename Type>
 const VectorType<Type, 4> VectorType<Type, 4>::One{ Type(1) };
 
 template<typename Type, typename OtherType, int M>
-inline auto& operator*=(VectorType<OtherType, M>& This, const VectorType<OtherType, M>& Other)
+inline auto& operator*=(VectorType<Type, M>& This, const VectorType<OtherType, M>& Other)
 {
 	for (int I = 0; I < M; ++I)
 	{
@@ -242,7 +286,7 @@ inline auto& operator*=(VectorType<OtherType, M>& This, const VectorType<OtherTy
 }
 
 template<typename Type, typename OtherType, int M>
-inline auto& operator*=(VectorType<OtherType, M>& This, OtherType Scalar)
+inline auto& operator*=(VectorType<Type, M>& This, OtherType Scalar)
 {
 	for (int I = 0; I < M; ++I)
 	{
@@ -252,7 +296,7 @@ inline auto& operator*=(VectorType<OtherType, M>& This, OtherType Scalar)
 }
 
 template<typename Type, typename OtherType, int M>
-inline auto& operator/=(VectorType<OtherType, M>& This, const VectorType<OtherType, M>& Other)
+inline auto& operator/=(VectorType<Type, M>& This, const VectorType<OtherType, M>& Other)
 {
 	for (int I = 0; I < M; ++I)
 	{
@@ -262,7 +306,7 @@ inline auto& operator/=(VectorType<OtherType, M>& This, const VectorType<OtherTy
 }
 
 template<typename Type, typename OtherType, int M>
-inline auto& operator/=(VectorType<OtherType, M>& This, OtherType Scalar)
+inline auto& operator/=(VectorType<Type, M>& This, OtherType Scalar)
 {
 	for (int I = 0; I < M; ++I)
 	{

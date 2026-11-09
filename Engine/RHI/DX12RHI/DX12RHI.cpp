@@ -4,6 +4,7 @@
 #include "../../App/WindowInterface.h"
 #include "DX12Resource.h"
 #include "../RHIResource.h"
+#include "../../Renderer/RenderResource.h"
 
 DX12RHI::DX12RHI(const Viewport& inViewport, const WindowInterface* const inWindow)
 {
