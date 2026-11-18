@@ -34,7 +34,7 @@ void Application::Run()
     while (AppWindow->PollWindowEvents() != WindowEvents::Quit)
     {
         GameTimer.Tick();
-        double deltaT = GameTimer.GetDeltaTime();
+        const double deltaT = GameTimer.GetDeltaTime();
         FrameCounter.Update(deltaT);
 
         Tick(deltaT);

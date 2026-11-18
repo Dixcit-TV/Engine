@@ -17,7 +17,12 @@
     <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\MathHelpers.h" />
     <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Misc\String.h" />
+    <ClInclude Include="Renderer\Rendering\MeshRendering.h" />
     <ClInclude Include="Misc\EnumHelpers.h" />
+    <ClInclude Include="Misc\Hash.h" />
+    <ClInclude Include="Renderer\ShaderManager.h" />
+    <ClInclude Include="Misc\Singleton.h" />
     <ClInclude Include="Renderer\RenderResource.h" />
     <ClInclude Include="Renderer\RenderScene.h" />
     <ClInclude Include="RHI\DX12RHI\DX12Resource.h" />
@@ -28,6 +33,7 @@
     <ClInclude Include="App\Viewport.h" />
     <ClInclude Include="App\WindowInterface.h" />
     <ClInclude Include="App\Windows\Win32Window.h" />
+    <ClInclude Include="RHI\DX12RHI\DX12Shader.h" />
     <ClInclude Include="RHI\RHIResource.h" />
     <ClInclude Include="RHI\RHIInterface.h" />
   </ItemGroup>
@@ -35,6 +41,7 @@
     <ClCompile Include="App\Application.cpp" />
     <ClCompile Include="Gameplay\Camera.cpp" />
     <ClCompile Include="Math\MathHelpers.cpp" />
+    <ClCompile Include="Renderer\Rendering\MeshRendering.cpp" />
     <ClCompile Include="Renderer\RenderScene.cpp" />
     <ClCompile Include="RHI\DX12RHI\DX12RHI.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />

@@ -4,13 +4,10 @@
 #include <dxgi1_3.h>
 #include <wrl/client.h>
 #include <exception>
-
 #include "../RHIInterface.h"
 
 struct Viewport;
-struct RHIResourceDesc;
 class WindowInterface;
-class RenderResource;
 
 using namespace Microsoft::WRL;
 
@@ -25,8 +22,10 @@ public:
 	void StartFrame() override;
 	void EndFrame() override;
 
-	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc);
-	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride);
+	void CompileShader(ShaderInterface* inShader) const override;
+
+	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const override;
+	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride) const override;
 
 private:
 	void ThrowIfFailed(HRESULT hr) const

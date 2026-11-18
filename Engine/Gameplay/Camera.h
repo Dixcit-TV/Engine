@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-	explicit Camera(const Vector3& inPosition, const Vector3& inDirection, const Vector3& inWorldUp, float inFOVdeg, float inAspectRatio, float inNearPlane, float inFarPlane);
+	explicit Camera(const Vector3& inPosition, const Vector3& inDirection, float inFOVdeg, float inAspectRatio, float inNearPlane, float inFarPlane);
 
 	Matrix44 GetViewMatrix() const { return ViewMatrix; }
 	Matrix44 GetProjectionMatrix() const { return ProjectionMatrix; }

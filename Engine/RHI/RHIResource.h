@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <memory>
+#include <string>
 #include "../Math/MathHelpers.h"
+#include "../Misc/Hash.h"
 
 enum class ResourceFormat : uint8_t
 {
@@ -199,4 +201,53 @@ public:
 	virtual ~RHIResource() = default;
 protected:
 	RHIResource() = default;
+};
+
+
+class RHIShader
+{
+public:
+	virtual ~RHIShader() = default;
+
+protected:
+	RHIShader() = default;
+};
+
+enum EShaderType : uint8_t
+{
+	VertexShader
+	, PixelShader
+	, HullShader
+	, DomainShader
+	, GeometryShader
+	, ComputeShader
+};
+
+class ShaderInterface
+{
+public:
+	virtual ~ShaderInterface() = default;
+	ShaderInterface(const ShaderInterface& other) = delete;
+	ShaderInterface(ShaderInterface&& other) = delete;
+	ShaderInterface& operator=(const ShaderInterface& other) = delete;
+	ShaderInterface& operator=(ShaderInterface&& other) = delete;
+
+	struct Cmp
+	{
+		bool operator()(const ShaderInterface* First, const ShaderInterface* Other) const
+		{
+			return First->GetHash() < Other->GetHash();
+		}
+	};
+
+	virtual void SetShaderRHI(std::shared_ptr<RHIShader> inShaderRHI) = 0;
+	virtual const std::string& GetShaderName() const = 0;
+	virtual const std::wstring& GetShaderFilePath() const = 0;
+	virtual const std::string& GetShaderEntry() const = 0;
+	virtual EShaderType GetShaderType() const = 0;
+
+protected:
+	ShaderInterface() = default;
+
+	virtual uint64_t GetHash() const = 0;
 };

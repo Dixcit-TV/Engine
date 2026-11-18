@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "../Math/MathHelpers.h"
 
-Camera::Camera(const Vector3& inPosition, const Vector3& inDirection, const Vector3& inWorldUp, float inFOVdeg, float inAspectRatio, float inNearPlane, float inFarPlane)
+Camera::Camera(const Vector3& inPosition, const Vector3& inDirection, float inFOVdeg, float inAspectRatio, float inNearPlane, float inFarPlane)
 	: ViewMatrix()
 	, ProjectionMatrix()
 	, ViewProjectionMatrix()
@@ -12,7 +12,7 @@ Camera::Camera(const Vector3& inPosition, const Vector3& inDirection, const Vect
 	, Direction(inDirection)
 	, bRefreshMatrices(false)
 {
-	Vector3 Right = inWorldUp.Cross(inDirection);
+	Vector3 Right = Vector3::UnitY.Cross(inDirection);
 	Right.Normalize();
 	Vector3 Up = Right.Cross(inDirection);
 	Up.Normalize();
@@ -66,8 +66,10 @@ void Camera::Update()
 {
 	if (bRefreshMatrices)
 	{
-		const Vector3 Right = Vector3::UnitY.Cross(Direction).GetNormalized();
-		const Vector3 Up = Right.Cross(Direction).GetNormalized();
+		Vector3 Right = Vector3::UnitY.Cross(Direction);
+		Right.Normalize();
+		Vector3 Up = Right.Cross(Direction);
+		Up.Normalize();
 		ViewMatrix = Matrix44(Vector4(Right, 0.f), Vector4(Up, 0.f), Vector4(Direction, 0.f), Vector4(Position, 1.f));
 		ViewProjectionMatrix = ViewMatrix * ProjectionMatrix;
 

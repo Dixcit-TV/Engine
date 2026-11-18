@@ -1,10 +1,13 @@
 #include "DX12RHI.h"
 #include <DirectXColors.h>
+#include <D3DCompiler.h>
+#include <format>
 #include "../../App/Viewport.h"
 #include "../../App/WindowInterface.h"
 #include "DX12Resource.h"
 #include "../RHIResource.h"
 #include "../../Renderer/RenderResource.h"
+#include "DX12Shader.h"
 
 DX12RHI::DX12RHI(const Viewport& inViewport, const WindowInterface* const inWindow)
 {
@@ -181,7 +184,31 @@ DX12RHI::~DX12RHI()
     DxgiFactory = nullptr;
 }
 
-RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc)
+void DX12RHI::CompileShader(ShaderInterface* inShader) const
+{
+	DX12Shader* Dx12Shader = new DX12Shader();
+
+    UINT compileFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+    compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+    std::string target = std::format("{}_5_0", DX12Shader::TypeToShortTypeName(inShader->GetShaderType()));
+
+    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
+    HRESULT hr = D3DCompileFromFile(inShader->GetShaderFilePath().c_str(), nullptr, nullptr, inShader->GetShaderEntry().c_str(), target.c_str(), compileFlags, 0, Dx12Shader->ReleaseAndGetAddress(), errorBlob.GetAddressOf());
+
+    if (errorBlob)
+    {
+        OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+    }
+
+    ThrowIfFailed(hr);
+
+	inShader->SetShaderRHI(std::shared_ptr<RHIShader>(Dx12Shader));
+}
+
+RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const
 {
     D3D12_RESOURCE_DESC Desc = DX12Helpers::ConvertDesc(inResourceDesc);
     D3D12_HEAP_PROPERTIES bufferHeapType = DX12Helpers::ConvertHeapProperties(inResourceDesc.Flags);
@@ -201,7 +228,7 @@ RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourc
     return RenderResource(inResourceDesc, Dx12Resource);
 }
 
-RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride)
+RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride) const
 {
     RenderResource OutResource = CreateCommittedResource(inResourceDesc);
 
