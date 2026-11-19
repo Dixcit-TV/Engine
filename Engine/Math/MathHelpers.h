@@ -202,6 +202,31 @@ namespace VectorHelpers
 			));
 	}
 
+	template<typename Type>
+	inline auto GetEulerRadiansFrom(const VectorType<Type, 3>& inDirection)
+	{
+		VectorType<Type, 3> EulerAngles;
+		EulerAngles.Y = -atan2f(inDirection.X, inDirection.Z);
+		EulerAngles.Z = 0;
+		if (EulerAngles.Y < -MathHelpers::Pi || EulerAngles.Y > MathHelpers::Pi)
+		{
+			EulerAngles.X = asinf(-inDirection.Y);
+		}
+		else
+		{
+			EulerAngles.X = asinf(inDirection.Y);
+		}
+
+		return EulerAngles;
+	}
+
+	template<typename Type>
+	inline auto GetEulerDegreesFrom(const VectorType<Type, 3>& inDirection)
+	{
+		VectorType<Type, 3> EulerAngles = GetEulerRadiansFrom(const VectorType<Type, 3>&inDirection);
+		return VectorType<Type, 3>(MathHelpers::RadiansToDegrees(EulerAngles.X), MathHelpers::RadiansToDegrees(EulerAngles.Y), MathHelpers::RadiansToDegrees(EulerAngles.Z));
+	}
+
 	template<typename Type, typename OtherType, int M, typename = std::enable_if_t<M == 2 || M == 3>>
 	inline auto Direction(const VectorType<Type, M>& First, const VectorType<OtherType, M>& Other)
 	{

@@ -12,11 +12,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Gameplay\ActorManager.h" />
+    <ClInclude Include="Gameplay\Actor.h" />
+    <ClInclude Include="Gameplay\Component.h" />
     <ClInclude Include="App\Application.h" />
-    <ClInclude Include="Gameplay\Camera.h" />
+    <ClInclude Include="AssetManagement\OpenFBX\libdeflate.h" />
+    <ClInclude Include="AssetManagement\OpenFBX\ofbx.h" />
+    <ClInclude Include="Gameplay\Components\CameraComponent.h" />
     <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\MathHelpers.h" />
     <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="AssetManagement\Mesh.h" />
     <ClInclude Include="Misc\String.h" />
     <ClInclude Include="Renderer\Rendering\MeshRendering.h" />
     <ClInclude Include="Misc\EnumHelpers.h" />
@@ -36,16 +42,24 @@
     <ClInclude Include="RHI\DX12RHI\DX12Shader.h" />
     <ClInclude Include="RHI\RHIResource.h" />
     <ClInclude Include="RHI\RHIInterface.h" />
+    <ClInclude Include="Gameplay\Components\StaticMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gameplay\ActorManager.cpp" />
+    <ClCompile Include="Gameplay\Actor.cpp" />
     <ClCompile Include="App\Application.cpp" />
-    <ClCompile Include="Gameplay\Camera.cpp" />
+    <ClCompile Include="AssetManagement\OpenFBX\libdeflate.c" />
+    <ClCompile Include="AssetManagement\OpenFBX\ofbx.cpp" />
+    <ClCompile Include="Gameplay\Component.cpp" />
+    <ClCompile Include="Gameplay\Components\CameraComponent.cpp" />
     <ClCompile Include="Math\MathHelpers.cpp" />
+    <ClCompile Include="AssetManagement\Mesh.cpp" />
     <ClCompile Include="Renderer\Rendering\MeshRendering.cpp" />
     <ClCompile Include="Renderer\RenderScene.cpp" />
     <ClCompile Include="RHI\DX12RHI\DX12RHI.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="App\Windows\Win32Window.cpp" />
+    <ClCompile Include="Gameplay\Components\StaticMeshComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
