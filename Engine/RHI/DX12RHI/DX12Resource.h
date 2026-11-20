@@ -22,10 +22,10 @@ namespace DX12Helpers
 	static inline D3D12_RESOURCE_FLAGS ConvertResourceFlags(ResourceFlag inFlags)
 	{
 		D3D12_RESOURCE_FLAGS OutFlags = D3D12_RESOURCE_FLAG_NONE;
-		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_RenderTarget) > 0) * D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_DepthStencil) > 0) * D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
-		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_UAV) > 0) * D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_NoSRV) > 0) * D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
+		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_RenderTarget) != ResourceFlag::RFLG_None) * D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_DepthStencil) != ResourceFlag::RFLG_None) * D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_UAV) != ResourceFlag::RFLG_None) * D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+		OutFlags |= static_cast<D3D12_RESOURCE_FLAGS>(((inFlags & ResourceFlag::RFLG_NoSRV) != ResourceFlag::RFLG_None) * D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
 		return OutFlags;
 	}
 
@@ -33,10 +33,10 @@ namespace DX12Helpers
 	{
 		D3D12_HEAP_TYPE HeapType = D3D12_HEAP_TYPE_DEFAULT;
 
-		if (inFlags & ResourceFlag::RFLG_Upload) HeapType = D3D12_HEAP_TYPE_UPLOAD;
-		else if (inFlags & ResourceFlag::RFLG_Readback) HeapType = D3D12_HEAP_TYPE_READBACK;
-		else if (inFlags & ResourceFlag::RFLG_Custom) HeapType = D3D12_HEAP_TYPE_CUSTOM;
-		else if (inFlags & ResourceFlag::RFLG_GpuUpload) HeapType = D3D12_HEAP_TYPE_GPU_UPLOAD;
+		if ((inFlags & ResourceFlag::RFLG_Upload) != ResourceFlag::RFLG_None) HeapType = D3D12_HEAP_TYPE_UPLOAD;
+		else if ((inFlags & ResourceFlag::RFLG_Readback) != ResourceFlag::RFLG_None) HeapType = D3D12_HEAP_TYPE_READBACK;
+		else if ((inFlags & ResourceFlag::RFLG_Custom) != ResourceFlag::RFLG_None) HeapType = D3D12_HEAP_TYPE_CUSTOM;
+		else if ((inFlags & ResourceFlag::RFLG_GpuUpload) != ResourceFlag::RFLG_None) HeapType = D3D12_HEAP_TYPE_GPU_UPLOAD;
 
 		return CD3DX12_HEAP_PROPERTIES(HeapType);
 	}

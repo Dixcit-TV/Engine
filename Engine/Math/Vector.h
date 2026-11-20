@@ -422,7 +422,7 @@ inline auto operator-(const VectorType<Type, M>& This)
 template<typename Type, int M>
 inline bool operator==(const VectorType<Type, M>& This, const VectorType<Type, M>& Other)
 {
-	constexpr Type Epsilon = std::numeric_limits<Type>::epsilon;
+	constexpr Type Epsilon = std::numeric_limits<Type>::epsilon();
 
 	for (int I = 0; I < M; ++I)
 	{

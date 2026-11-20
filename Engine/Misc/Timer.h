@@ -104,7 +104,7 @@ struct FPSCounter
 			Callback(FPS, FrameTime);
 
 			FrameCountSinceLastUpdate = FrameCount;
-			FPSCounterElapsedTime = (SecondsPerUpdate - FPSCounterElapsedTime);
+			FPSCounterElapsedTime -= SecondsPerUpdate;
 		}
 	}
 

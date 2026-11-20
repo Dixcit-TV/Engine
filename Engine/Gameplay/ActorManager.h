@@ -4,6 +4,7 @@
 #include <map>
 
 class Tickable;
+class Renderable;
 
 class ActorManager : public Singleton<ActorManager>
 {
@@ -55,10 +56,32 @@ public:
 		}
 	}
 
+	inline void RegisterDirtyRenderComponent(Renderable* inRenderComponent)
+	{
+		DirtyComponents.push_back(inRenderComponent);
+	}
+
+	inline void UnregisterDirtyRenderComponent(Renderable* inRenderComponent)
+	{
+		auto It = std::find(DirtyComponents.begin(), DirtyComponents.end(), inRenderComponent);
+		if (It != DirtyComponents.end())
+		{
+			std::swap(*It, DirtyComponents.back());
+			DirtyComponents.pop_back();
+		}
+	}
+
 	void Tick(double inDeltaTime);
+	void UpdateRenderStates();
+
+protected:
+	friend class Singleton<ActorManager>;
+
+	explicit ActorManager() = default;
 
 private:
 	std::vector<Actor*> Actors;
 	std::vector<Tickable*> TickComponents;
+	std::vector<Renderable*> DirtyComponents;
 };
 

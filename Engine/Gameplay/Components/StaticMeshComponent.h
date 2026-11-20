@@ -2,15 +2,16 @@
 #include "../Component.h"
 #include "../../AssetManagement/Mesh.h"
 
-class StaticMeshComponent : public TransformComponent
+class StaticMeshComponent : public RenderTransformComponent
 {
 public:
-	explicit StaticMeshComponent() = default;
+	explicit StaticMeshComponent(Mesh* inMesh = nullptr) : MeshData(inMesh) {}
 
-	void SetMesh(Mesh* inMesh)
-	{
-		MeshData = inMesh;
-	}
+	virtual void CreateRenderState() override {}
+	virtual void DestroyRenderState() override {}
+
+	void SetMesh(Mesh* inMesh) { MeshData = inMesh; MarkRenderStateDirty(); }
+	Mesh* GetMesh() const { return MeshData; }
 
 protected:
 	Mesh* MeshData = nullptr;

@@ -39,11 +39,13 @@ protected:
 		, Hash(0)
 		, Type(inType)
 	{
-		const int TotalLength = FilePath.length() * sizeof(WCHAR) + Entry.length();
-		char* TotalString = new char[TotalLength + 1];
+		const size_t PathByteSize = FilePath.length() * sizeof(WCHAR);
+		const size_t EntryByteSize = Entry.length();
+		const size_t TotalLength = PathByteSize + EntryByteSize;
+		char* TotalString = new char[TotalLength];
 
-		strcpy(TotalString, reinterpret_cast<const char*>(FilePath.c_str()));
-		strcat(TotalString, Entry.c_str());
+		memcpy(TotalString, reinterpret_cast<const char*>(FilePath.c_str()), PathByteSize);
+		memcpy(TotalString + PathByteSize, Entry.c_str(), EntryByteSize);
 
 		Hash = Hash::xxh64(TotalString, TotalLength, 0);
 

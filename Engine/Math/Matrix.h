@@ -74,39 +74,41 @@ struct MatrixType
 	template<typename = std::enable_if_t<M == N>>
 	inline double Determinant() const
 	{
-		double Det = 0.0;
+		double Det = 1.0;
 		constexpr Type Epsilon = std::numeric_limits<Type>::epsilon();
+
+		MatrixType Copy = *this;
 
 		for (int I = 0; I < M; ++I)
 		{
 			int Pivot = I;
 			for (int J = I + 1; J < M; ++J)
 			{
-				if (abs(Data[J][I]) > abs(Data[Pivot][I]))
+				if (abs(Copy.Data[J][I]) > abs(Copy.Data[Pivot][I]))
 				{
 					Pivot = J;
 				}
 			}
 
-			if (abs(Data[Pivot][I]) < Epsilon)
+			if (abs(Copy.Data[Pivot][I]) < Epsilon)
 			{
 				return 0.0;
 			}
 
 			if (Pivot != I)
 			{
-				std::swap(Data[I], Data[Pivot]);
+				std::swap(Copy.Data[I], Copy.Data[Pivot]);
 				Det = -Det;
 			}
 
-			Det *= Data[I][I];
+			Det *= Copy.Data[I][I];
 
 			for (int J = I + 1; J < M; ++J)
 			{
-				Type Factor = Data[J][I] / Data[I][J];
+				Type Factor = Copy.Data[J][I] / Copy.Data[I][I];
 				for (int K = I; K < M; ++K)
 				{
-					Data[J][K] -= Factor * Data[I][K];
+					Copy.Data[J][K] -= Factor * Copy.Data[I][K];
 				}
 			}
 		}
@@ -136,7 +138,7 @@ struct MatrixType
 
 			if (MaxVal < Epsilon)
 			{
-				return IdentityMatrix<Type, M, M>();
+				return Identity();
 			}
 
 			if (Pivot != I)
@@ -540,7 +542,7 @@ struct MatrixType<Type, 4, 4>
 		const double Det = double(M00) * Inverse.M00 + double(M01) * Inverse.M10 + double(M02) * Inverse.M20 + double(M03) * Inverse.M30;
 		if (abs(Det) < std::numeric_limits<double>::epsilon())
 		{
-			return MatrixType<Type, 4, 4>::Indentity;
+			return MatrixType<Type, 4, 4>::Identity;
 		}
 
 		const double InvDet = 1.0 / Det;
@@ -548,7 +550,7 @@ struct MatrixType<Type, 4, 4>
 		{
 			for (int C = 0; C < 4; ++C)
 			{
-				Inverse.MRC *= InvDet;
+				Inverse.Data[R][C] = static_cast<Type>(Inverse.Data[R][C] * InvDet);
 			}
 		}
 
@@ -663,7 +665,7 @@ inline auto& operator-=(MatrixType<Type, M, N>& This, OtherType Scalar)
 template<typename Type, typename OtherType, int M, int N, int O>
 inline auto operator*(const MatrixType<Type, M, N>& First, const MatrixType<OtherType, O, M>& Other)
 {
-	MatrixType<Type, O, M> RetValue(First);
+	MatrixType<Type, M, N> RetValue(First);
 	return RetValue *= Other;
 }
 

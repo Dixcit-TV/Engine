@@ -16,3 +16,15 @@ void ActorManager::Tick(double inDeltaTime)
 		Comp->Tick(inDeltaTime);
 	}
 }
+
+void ActorManager::UpdateRenderStates()
+{
+	for (Renderable* Comp : DirtyComponents)
+	{
+		Comp->DestroyRenderState();
+		Comp->CreateRenderState();
+		Comp->MarkRenderStateValid();
+	}
+
+	DirtyComponents.clear();
+}

@@ -3,11 +3,19 @@
 #include "../../Math/Matrix.h"
 #include "../Component.h"
 
-class CameraComponent : public TransformComponent
+class CameraComponent : public RenderTransformComponent
 {
 public:
-	explicit CameraComponent() = default;
+	explicit CameraComponent() : FOVdeg(0.f), AspectRatio(0.f), NearPlane(0.f), FarPlane(1.f) {}
 	explicit CameraComponent(const Vector3& inPosition, const Vector3& inDirection, float inFOVdeg, float inAspectRatio, float inNearPlane, float inFarPlane);
+
+	virtual void CreateRenderState() override {}
+	virtual void DestroyRenderState() override {}
+
+	void SetFOV(float inFOVdeg) { FOVdeg = inFOVdeg; MarkRenderStateDirty(); }
+	void SetAspectRatio(float inAspectRatio) { AspectRatio = inAspectRatio; MarkRenderStateDirty(); }
+	void SetNearPlane(float inNearPlane) { NearPlane = inNearPlane; MarkRenderStateDirty(); }
+	void SetFarPlane(float inFarPlane) { FarPlane = inFarPlane; MarkRenderStateDirty(); }
 
 	//Matrix44 GetViewMatrix() const { return ViewMatrix; }
 	//Matrix44 GetProjectionMatrix() const { return ProjectionMatrix; }

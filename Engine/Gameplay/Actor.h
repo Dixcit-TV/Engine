@@ -8,11 +8,12 @@ class Actor final
 public:
 	explicit Actor() = default;
 
-	template<typename T, std::enable_if_t<std::is_base_of_v<Component, T>>>
-	T* AddComponent()
+	template<typename T, typename ...Args, typename = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	T* AddComponent(Args&&... args)
 	{
-		T* NewComponent = new T();
+		T* NewComponent = new T(std::forward<Args>(args)...);
 		Components.push_back(NewComponent);
+		NewComponent->SetOwner(this);
 
 		return NewComponent;
 	}

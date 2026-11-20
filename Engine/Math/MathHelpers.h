@@ -8,29 +8,29 @@ namespace MathHelpers
 {
 	inline static constexpr double Pi = 3.14159265358979323846;
 
-	inline uint32_t RoundUpTo(uint32_t value, uint32_t multiple)
+	inline uint32_t RoundUpTo(uint32_t inValue, uint32_t inMultiple)
 	{
-		return (value + (multiple - 1)) & ~(multiple - 1);
+		return inMultiple > 1 ? (inValue + (inMultiple - 1)) & ~(inMultiple - 1) : inValue;
 	}
 
-	inline double DegreesToRadians(double degrees)
+	inline double DegreesToRadians(double inDegrees)
 	{
-		return degrees * (Pi / 180.0);
+		return inDegrees * (Pi / 180.0);
 	}
 
-	inline float DegreesToRadians(float degrees)
+	inline float DegreesToRadians(float inDegrees)
 	{
-		return degrees * (float(Pi) / 180.0f);
+		return inDegrees * (float(Pi) / 180.0f);
 	}
 
-	inline double RadiansToDegrees(double radians)
+	inline double RadiansToDegrees(double inRadians)
 	{
-		return radians * (180.0 / Pi);
+		return inRadians * (180.0 / Pi);
 	}
 
-	inline float RadiansToDegrees(float radians)
+	inline float RadiansToDegrees(float inRadians)
 	{
-		return radians * (180.0f / float(Pi));
+		return inRadians * (180.0f / float(Pi));
 	}
 };
 
@@ -206,16 +206,9 @@ namespace VectorHelpers
 	inline auto GetEulerRadiansFrom(const VectorType<Type, 3>& inDirection)
 	{
 		VectorType<Type, 3> EulerAngles;
-		EulerAngles.Y = -atan2f(inDirection.X, inDirection.Z);
+		EulerAngles.Y = static_cast<Type>(-atan2(inDirection.X, inDirection.Z));
 		EulerAngles.Z = 0;
-		if (EulerAngles.Y < -MathHelpers::Pi || EulerAngles.Y > MathHelpers::Pi)
-		{
-			EulerAngles.X = asinf(-inDirection.Y);
-		}
-		else
-		{
-			EulerAngles.X = asinf(inDirection.Y);
-		}
+		EulerAngles.X = static_cast<Type>(asin(inDirection.Y));
 
 		return EulerAngles;
 	}
@@ -223,7 +216,7 @@ namespace VectorHelpers
 	template<typename Type>
 	inline auto GetEulerDegreesFrom(const VectorType<Type, 3>& inDirection)
 	{
-		VectorType<Type, 3> EulerAngles = GetEulerRadiansFrom(const VectorType<Type, 3>&inDirection);
+		VectorType<Type, 3> EulerAngles = GetEulerRadiansFrom(inDirection);
 		return VectorType<Type, 3>(MathHelpers::RadiansToDegrees(EulerAngles.X), MathHelpers::RadiansToDegrees(EulerAngles.Y), MathHelpers::RadiansToDegrees(EulerAngles.Z));
 	}
 

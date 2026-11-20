@@ -10,14 +10,19 @@ Actor::~Actor()
 	}
 }
 
-void Actor::AddComponent(Component* inComponents) { Components.push_back(inComponents); }
+void Actor::AddComponent(Component* inComponents) 
+{ 
+	Components.push_back(inComponents); 
+	inComponents->SetOwner(this);
+}
 
 void Actor::RemoveComponent(Component* inComponents)
 {
 	auto It = std::find(Components.begin(), Components.end(), inComponents);
 	if (It != Components.end())
 	{
-		delete* It;
+		(*It)->Deinitialize();
+		delete *It;
 		std::swap(*It, Components.back());
 		Components.pop_back();
 	}
