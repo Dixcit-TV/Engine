@@ -60,6 +60,7 @@
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="App\Windows\Win32Window.cpp" />
     <ClCompile Include="Gameplay\Components\StaticMeshComponent.cpp" />
+    <ClCompile Include="RHI\RHIFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

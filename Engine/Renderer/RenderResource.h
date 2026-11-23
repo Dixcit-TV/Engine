@@ -4,7 +4,7 @@
 #include "../RHI/RHIResource.h"
 #include "../Misc/Hash.h"
 #include "../Misc/String.h"
-#include "ShaderManager.h"
+#include "ShaderCache.h"
 
 class RenderResource
 {
@@ -51,7 +51,7 @@ protected:
 
 		delete[] TotalString;
 
-		ShaderManager::Get().RegisterShader(this);
+		ShaderCache::Get().RegisterShader(this);
 	}
 
 private:

@@ -9,7 +9,12 @@
 #include "../../Renderer/RenderResource.h"
 #include "DX12Shader.h"
 
-DX12RHI::DX12RHI(const Viewport& inViewport, const WindowInterface* const inWindow)
+#pragma comment (lib, "d3dcompiler.lib")
+#pragma comment (lib, "D3D12.lib")
+#pragma comment (lib, "dxgi.lib")
+#pragma comment (lib, "dxguid.lib")
+
+DX12RHI::DX12RHI(const Viewport& inViewport, const std::unique_ptr<WindowInterface>& inWindow)
 {
     UINT dxgiFactoryFlags = 0;
     //Enable debug layer if needed

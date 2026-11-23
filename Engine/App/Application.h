@@ -23,7 +23,6 @@ protected:
 	virtual void Tick(double inDeltaTime) = 0;
 	virtual void Shutdown() = 0;
 
-protected:
 	AppSettings Settings;
 	std::unique_ptr<WindowInterface> AppWindow;
 	std::unique_ptr<Renderer> AppRenderer;

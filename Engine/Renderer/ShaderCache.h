@@ -5,14 +5,14 @@
 #include "../RHI/RHIResource.h"
 #include "../RHI/RHIInterface.h"
 
-class ShaderManager : public Singleton<ShaderManager>
+class ShaderCache : public Singleton<ShaderCache>
 {
 public:
-	virtual ~ShaderManager() override = default;
-	ShaderManager(const ShaderManager& other) = delete;
-	ShaderManager(ShaderManager&& other) = delete;
-	ShaderManager& operator=(const ShaderManager& other) = delete;
-	ShaderManager& operator=(ShaderManager&& other) = delete;
+	virtual ~ShaderCache() override = default;
+	ShaderCache(const ShaderCache& other) = delete;
+	ShaderCache(ShaderCache&& other) = delete;
+	ShaderCache& operator=(const ShaderCache& other) = delete;
+	ShaderCache& operator=(ShaderCache&& other) = delete;
 
 	void RegisterShader(ShaderInterface* inShader)
 	{
@@ -29,9 +29,9 @@ public:
 	}
 
 protected:
-	friend class Singleton<ShaderManager>;
+	friend class Singleton<ShaderCache>;
 
-	explicit ShaderManager() = default;
+	explicit ShaderCache() = default;
 
 private:
 	std::set<ShaderInterface*, ShaderInterface::Cmp> Shaders;

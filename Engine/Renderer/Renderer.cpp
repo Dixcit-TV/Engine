@@ -1,22 +1,16 @@
 #include "Renderer.h"
 #include "../RHI/RHIInterface.h"
-#include "ShaderManager.h"
+#include "../App/WindowInterface.h"
+#include "../App/Viewport.h"
+#include "ShaderCache.h"
 
-Renderer::Renderer(std::unique_ptr<RHIInterface>&& inRHI)
-	: Scene()
-    , RHI(std::move(inRHI))
-{}
-
-void Renderer::Init(const std::vector<RenderView>& inViews)
+void Renderer::Init(RHIType inType, const Viewport& inViewport, const std::unique_ptr<WindowInterface>& inWindow)
 {
-	ShaderManager::Get().CompileAllShaders(RHI.get());
+    RHI = RHIInterface::Create(inType, inViewport, inWindow);
+
+	ShaderCache::Get().CompileAllShaders(RHI.get());
 
     Scene.Init();
-
-    for (const RenderView& View : inViews)
-    {
-		Scene.AddView(View);
-    }
 }
 
 void Renderer::RenderFrame()

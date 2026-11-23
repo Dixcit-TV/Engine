@@ -14,7 +14,7 @@ using namespace Microsoft::WRL;
 class DX12RHI final : public RHIInterface
 {
 public:
-	DX12RHI(const Viewport& inViewport, const WindowInterface* const inWindow);
+	DX12RHI(const Viewport& inViewport, const std::unique_ptr<WindowInterface>& inWindow);
 	~DX12RHI() override;
 
 	void FlushCommandQueue() override;
