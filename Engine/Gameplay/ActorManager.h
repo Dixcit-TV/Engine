@@ -9,11 +9,13 @@ class Renderable;
 class ActorManager : public Singleton<ActorManager>
 {
 public:
-	virtual ~ActorManager() override;
+	virtual ~ActorManager() = default;
 	ActorManager(const ActorManager& other) = delete;
 	ActorManager(ActorManager&& other) = delete;
 	ActorManager& operator=(const ActorManager& other) = delete;
 	ActorManager& operator=(ActorManager&& other) = delete;
+
+	void Shutdown();
 
 	inline static Actor* CreateActor()
 	{

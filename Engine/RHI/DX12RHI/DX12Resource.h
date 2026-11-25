@@ -41,6 +41,11 @@ namespace DX12Helpers
 		return CD3DX12_HEAP_PROPERTIES(HeapType);
 	}
 
+	static inline D3D12_RESOURCE_STATES ConvertResourceState(ResourceState inStates)
+	{
+		return static_cast<D3D12_RESOURCE_STATES>(inStates);
+	}
+
 	static inline D3D12_RESOURCE_DESC ConvertDesc(const RHIResourceDesc& inDesc)
 	{
 		D3D12_RESOURCE_DESC OutDesc;
@@ -53,7 +58,7 @@ namespace DX12Helpers
 		OutDesc.Format = ConvertFormat(inDesc.Format);
 		OutDesc.SampleDesc.Count = inDesc.SampleDesc.Count;
 		OutDesc.SampleDesc.Quality = inDesc.SampleDesc.Quality;
-		OutDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		OutDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		OutDesc.Flags = ConvertResourceFlags(inDesc.Flags);
 
 		return OutDesc;

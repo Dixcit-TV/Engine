@@ -3,6 +3,7 @@
 #include "../App/WindowInterface.h"
 #include "../App/Viewport.h"
 #include "ShaderCache.h"
+#include "RenderCommandScheduler.h"
 
 void Renderer::Init(RHIType inType, const Viewport& inViewport, const std::unique_ptr<WindowInterface>& inWindow)
 {
@@ -13,9 +14,16 @@ void Renderer::Init(RHIType inType, const Viewport& inViewport, const std::uniqu
     Scene.Init();
 }
 
+void Renderer::Shutdown()
+{
+    RenderFrame();
+}
+
 void Renderer::RenderFrame()
 {
     RHI->StartFrame();
+    RenderCommandScheduler::Submit(RHI.get(), Scene);
+
 
     RHI->EndFrame();
 }

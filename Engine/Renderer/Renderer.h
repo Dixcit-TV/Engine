@@ -18,6 +18,7 @@ public:
 	Renderer& operator=(Renderer&& other) = delete;
 
 	void Init(RHIType inType, const Viewport& inViewport, const std::unique_ptr<WindowInterface>& inWindow);
+	void Shutdown();
 	void RenderFrame();
 
 	static Renderer* Create() 

@@ -213,7 +213,7 @@ void DX12RHI::CompileShader(ShaderInterface* inShader) const
 	inShader->SetShaderRHI(std::shared_ptr<RHIShader>(Dx12Shader));
 }
 
-RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const
+RenderResource* DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const
 {
     D3D12_RESOURCE_DESC Desc = DX12Helpers::ConvertDesc(inResourceDesc);
     D3D12_HEAP_PROPERTIES bufferHeapType = DX12Helpers::ConvertHeapProperties(inResourceDesc.Flags);
@@ -225,44 +225,48 @@ RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourc
             &bufferHeapType
             , D3D12_HEAP_FLAG_NONE
             , &Desc
-            , D3D12_RESOURCE_STATE_COMMON
+            , DX12Helpers::ConvertResourceState(inResourceDesc.States)
             , nullptr
             , IID_PPV_ARGS(Dx12Resource->GetAddress())
         ));
 
-    return RenderResource(inResourceDesc, Dx12Resource);
+    return new RenderResource(inResourceDesc, Dx12Resource);
 }
 
-RenderResource DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride) const
+RenderResource* DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc, RenderResource* inUploadResource, void* InitialData) const
 {
-    RenderResource OutResource = CreateCommittedResource(inResourceDesc);
+    RenderResource* OutResource = CreateCommittedResource(inResourceDesc);
 
-    if (InitialData)
+    if (InitialData && inUploadResource)
     {
-        RHIResourceDesc UploadBufferDesc = RHIResourceDesc::Buffer(Count, Stride, ResourceFlag::RFLG_Upload, inResourceDesc.Alignment);
-        RenderResource UploadBuffer = CreateCommittedResource(UploadBufferDesc);
-
         D3D12_SUBRESOURCE_DATA subResourceData;
         subResourceData.pData = InitialData;
-        subResourceData.RowPitch = Count * Stride;
+        subResourceData.RowPitch = inResourceDesc.Width;
         subResourceData.SlicePitch = subResourceData.RowPitch;
 
-        std::shared_ptr<DX12Resource> DestResource = OutResource.GetResource<DX12Resource>();
-        std::shared_ptr<DX12Resource> SourceResource = UploadBuffer.GetResource<DX12Resource>();
+        std::shared_ptr<DX12Resource> DestResource = OutResource->GetResource<DX12Resource>();
+        std::shared_ptr<DX12Resource> UploadResource = inUploadResource->GetResource<DX12Resource>();
 
         D3D12_RESOURCE_BARRIER ResourceBarriers[]{
             CD3DX12_RESOURCE_BARRIER::Transition(DestResource->Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST)
-            , CD3DX12_RESOURCE_BARRIER::Transition(SourceResource->Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_SOURCE)
+            , CD3DX12_RESOURCE_BARRIER::Transition(UploadResource->Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_SOURCE)
         };
         D3dCmdList->ResourceBarrier(2, ResourceBarriers);
 
-        UpdateSubresources<1>(D3dCmdList.Get(), DestResource->Get(), SourceResource->Get(), 0, 0, 1, &subResourceData);
+        UpdateSubresources<1>(D3dCmdList.Get(), DestResource->Get(), UploadResource->Get(), 0, 0, 1, &subResourceData);
 
         D3D12_RESOURCE_BARRIER ResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(DestResource->Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
         D3dCmdList->ResourceBarrier(1, &ResourceBarrier);
     }
 
     return OutResource;
+}
+
+RenderResource* DX12RHI::CreateCommittedResource(const RHIResourceDesc& inResourceDesc, RenderResource** outUploadResource, void* InitialData) const
+{
+    RHIResourceDesc UploadBufferDesc = RHIResourceDesc::Buffer(inResourceDesc.Width, ResourceFlag::RFLG_Upload);
+    *outUploadResource = CreateCommittedResource(UploadBufferDesc);
+    return CreateCommittedResource(inResourceDesc, *outUploadResource, InitialData);
 }
 
 void DX12RHI::ExecuteCommandList()

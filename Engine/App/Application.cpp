@@ -41,4 +41,6 @@ void Application::Run()
     }
 
     Shutdown();
+    ActorManager::Get().Shutdown();
+    AppRenderer->Shutdown();
 }

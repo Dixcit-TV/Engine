@@ -27,7 +27,8 @@
     <ClInclude Include="Renderer\Rendering\MeshRendering.h" />
     <ClInclude Include="Misc\EnumHelpers.h" />
     <ClInclude Include="Misc\Hash.h" />
-    <ClInclude Include="Renderer\ShaderManager.h" />
+    <ClInclude Include="Gameplay\RenderStates.h" />
+    <ClInclude Include="Renderer\ShaderCache.h" />
     <ClInclude Include="Misc\Singleton.h" />
     <ClInclude Include="Renderer\RenderResource.h" />
     <ClInclude Include="Renderer\RenderScene.h" />
@@ -54,8 +55,10 @@
     <ClCompile Include="Gameplay\Components\CameraComponent.cpp" />
     <ClCompile Include="Math\MathHelpers.cpp" />
     <ClCompile Include="AssetManagement\Mesh.cpp" />
+    <ClCompile Include="Renderer\RenderCommandScheduler.h" />
     <ClCompile Include="Renderer\Rendering\MeshRendering.cpp" />
     <ClCompile Include="Renderer\RenderScene.cpp" />
+    <ClCompile Include="Gameplay\RenderStates.cpp" />
     <ClCompile Include="RHI\DX12RHI\DX12RHI.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="App\Windows\Win32Window.cpp" />

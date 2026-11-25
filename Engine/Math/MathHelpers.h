@@ -70,7 +70,7 @@ namespace MatrixHelpers
 	template<typename Type, int M, typename = std::enable_if_t<M == 3 || M == 4>>
 	inline void Rotate(MatrixType<Type, M, M>& inOutMat, const Quaternion<Type>& inQuat)
 	{
-		const VectorType Img(inQuat.Img());
+		const VectorType Img(inQuat.Img);
 		const VectorType Img2x(Img + Img);
 		const VectorType<Type, 3> Mat0(inOutMat.M00, inOutMat.M01, inOutMat.M02);
 		const VectorType<Type, 3> Mat1(inOutMat.M10, inOutMat.M11, inOutMat.M12);
@@ -126,6 +126,19 @@ namespace MatrixHelpers
 	{
 		Rotate(inOutMat, Quaternion(inRadians, inUnitAxis));
 	}
+
+	template<typename Type>
+	inline static MatrixType<Type, 4, 4> MakeProjectionMatrix(Type inFOVdeg, Type inAspectRatio, Type inNearPlane, Type inFarPlane)
+	{
+		const float FOV = MathHelpers::DegreesToRadians(inFOVdeg);
+		const float TanFOVRad = tanf(FOV / 2.f);
+		const float Depth = inFarPlane - inNearPlane;
+		return MatrixType<Type, 4, 4>(VectorType<Type, 4>(
+			1.f / (inAspectRatio * TanFOVRad), 0.f, 0.f, 0.f)
+			, VectorType<Type, 4>(0.f, 1.f / TanFOVRad, 0.f, 0.f)
+			, VectorType<Type, 4>(0.f, 0.f, inFarPlane / Depth, 1.f)
+			, VectorType<Type, 4>(0.f, 0.f, -inFarPlane * inNearPlane / Depth, 0.f));
+	}
 };
 
 namespace VectorHelpers
@@ -133,11 +146,10 @@ namespace VectorHelpers
 	template<typename Type, int M, typename = std::enable_if_t<M == 3 || M == 4>>
 	inline void Rotate(VectorType<Type, M>& inOutVector, const Quaternion<Type>& inQuat)
 	{
-		const VectorType Img(inQuat.Img());
-		const VectorType Img2x(Img + Img);
+		const VectorType Img2x(inQuat.Img + inQuat.Img);
 		const VectorType<Type, 3> Vec3(inOutVector.X, inOutVector.Y, inOutVector.Z);
 
-		const VectorType<Type, 3> Res = Img2x.Cross(Img.Cross(Vec3) + Vec3 * inQuat.R);
+		const VectorType<Type, 3> Res = Img2x.Cross(inQuat.Img.Cross(Vec3) + Vec3 * inQuat.R);
 		inOutVector.X += Res.X;
 		inOutVector.Y += Res.Y;
 		inOutVector.Z += Res.Z;

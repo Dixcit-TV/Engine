@@ -10,6 +10,7 @@ struct Quaternion
 		struct {
 			Type R, I, J, K;
 		};
+		struct { Type Real; VectorType<Type, 3> Img; };
 #pragma warning(default:4201)
 
 		Type Data[4];
@@ -18,12 +19,9 @@ struct Quaternion
 	inline Quaternion(Type inReal = Type(1), Type inI = Type(0), Type inJ = Type(0), Type inK = Type(0)) : R(inReal), I(inI), J(inJ), K(inK) {}
 	inline Quaternion(double inRadAngle, const VectorType<Type, 3>& inAxis)
 	{  
-		double halfAngle = inRadAngle / 2.f;
-		double s = sin(halfAngle);
-		R = static_cast<Type>(cos(halfAngle));
-		I = static_cast<Type>(inAxis.X * s);
-		J = static_cast<Type>(inAxis.Y * s);
-		K = static_cast<Type>(inAxis.Z * s);
+		const double HalfAngle{ inRadAngle * 0.5f };
+		Real = static_cast<Type>(cos(HalfAngle));
+		Img = inAxis * static_cast<Type>(sin(HalfAngle));
 	}
 	inline Quaternion(Type inI, Type inJ, Type inK) : R(0), I(inI), J(inJ), K(inK) {  }
 
@@ -35,43 +33,32 @@ struct Quaternion
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline Quaternion& operator =(const Quaternion<OtherType>& Other)
 	{
-		R = static_cast<Type>(Other.R);
-		I = static_cast<Type>(Other.I);
-		J = static_cast<Type>(Other.J);
-		K = static_cast<Type>(Other.K);
+		Real = static_cast<Type>(Other.Real);
+		Img = static_cast<Type>(Other.Img);
 		return *this;
 	}
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline Quaternion& operator =(Quaternion<OtherType>&& Other)
 	{
-		R = static_cast<Type>(Other.R);
-		I = static_cast<Type>(Other.I);
-		J = static_cast<Type>(Other.J);
-		K = static_cast<Type>(Other.K);
+		Real = static_cast<Type>(Other.Real);
+		Img = static_cast<Type>(Other.Img);
 		return *this;
 	}
-
-	inline Type Real() const { return R; };
-	inline VectorType<Type, 3> Img() const { return VectorType<Type, 3>(I, J, K); };
 
 	template<typename OtherType>
 	inline Quaternion& operator *=(OtherType scalar)
 	{
-		R *= static_cast<Type>(scalar);
-		I *= static_cast<Type>(scalar);
-		J *= static_cast<Type>(scalar);
-		K *= static_cast<Type>(scalar);
+		Real *= static_cast<Type>(scalar);
+		Img *= static_cast<Type>(scalar);
 		return *this;
 	}
 
 	template<typename OtherType>
 	inline Quaternion& operator /=(OtherType scalar)
 	{  
-		R /= static_cast<Type>(scalar);
-		I /= static_cast<Type>(scalar);
-		J /= static_cast<Type>(scalar);
-		K /= static_cast<Type>(scalar);
+		Real /= static_cast<Type>(scalar);
+		Img /= static_cast<Type>(scalar);
 		return *this;
 	}
 

@@ -65,4 +65,8 @@ void DevelopmentApp::Tick(double inDeltaTime)
 
 void DevelopmentApp::Shutdown()
 {
+    for (auto& MeshPair : Meshes)
+    {
+        delete MeshPair.second;
+    }
 }

@@ -1,7 +1,7 @@
 #include "ActorManager.h"
 #include "Component.h"
 
-ActorManager::~ActorManager()
+void ActorManager::Shutdown()
 {
 	for (Actor* actor : Actors)
 	{

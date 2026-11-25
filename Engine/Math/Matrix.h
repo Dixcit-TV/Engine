@@ -181,6 +181,9 @@ struct MatrixType<Type, 2, 2>
 			Type M00, M01
 				, M10, M11;
 		};
+		struct {
+			VectorType<Type, 2> V0, V1;
+		};
 #pragma warning(default:4201)
 
 		Type Data[2][2];
@@ -203,8 +206,8 @@ struct MatrixType<Type, 2, 2>
 	};
 
 	inline MatrixType(const VectorType<Type, 2>& inV1, const VectorType<Type, 2>& inV2)
-		: M00(inV1.X), M01(inV1.Y)
-		, M10(inV2.X), M11(inV2.Y)
+		: V0(inV1)
+		, V1(inV2)
 	{
 	};
 
@@ -289,6 +292,9 @@ struct MatrixType<Type, 3, 3>
 				, M10, M11, M12
 				, M20, M21, M22;
 		};
+		struct {
+			VectorType<Type, 3> V0, V1, V2;
+		};
 #pragma warning(default:4201)
 
 		Type Data[3][3];
@@ -311,9 +317,9 @@ struct MatrixType<Type, 3, 3>
 	{};
 
 	inline MatrixType(const VectorType<Type, 3>& inV1, const VectorType<Type, 3>& inV2, const VectorType<Type, 3>& inV3)
-		: M00(inV1.X), M01(inV1.Y), M02(inV1.Z)
-		, M10(inV2.X), M11(inV2.Y), M12(inV2.Z)
-		, M20(inV3.X), M21(inV3.Y), M22(inV3.Z)
+		: V0(inV1)
+		, V1(inV2)
+		, V2(inV3)
 	{};
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
@@ -409,6 +415,9 @@ struct MatrixType<Type, 4, 4>
 				, M20, M21, M22, M23
 				, M30, M31, M32, M33;
 		};
+		struct {
+			VectorType<Type, 4> V0, V1, V2, V3;
+		};
 #pragma warning(default:4201)
 
 		Type Data[4][4];
@@ -435,10 +444,10 @@ struct MatrixType<Type, 4, 4>
 	};
 
 	inline MatrixType(const VectorType<Type, 4>& inV1, const VectorType<Type, 4>& inV2, const VectorType<Type, 4>& inV3, const VectorType<Type, 4>& inV4)
-		: M00(inV1.X), M01(inV1.Y), M02(inV1.Z), M03(inV1.W)
-		, M10(inV2.X), M11(inV2.Y), M12(inV2.Z), M13(inV2.W)
-		, M20(inV3.X), M21(inV3.Y), M22(inV3.Z), M23(inV3.W)
-		, M30(inV4.X), M31(inV4.Y), M32(inV4.Z), M33(inV4.W)
+		: V0(inV1)
+		, V1(inV2)
+		, V2(inV3)
+		, V3(inV4)
 	{
 	};
 

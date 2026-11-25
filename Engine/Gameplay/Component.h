@@ -1,6 +1,8 @@
 #pragma once
-#include "../Math/Vector.h"
 #include <cassert>
+#include "../Math/Vector.h"
+#include "../Math/Matrix.h"
+#include "../Math/MathHelpers.h"
 
 class Actor;
 
@@ -20,6 +22,25 @@ struct Transform
 	inline void Translate(const Vector3& inTranslation) { Position += inTranslation; }
 	inline void Rotate(const Vector3& inRotation) { Rotation += inRotation; }
 	inline void ScaleBy(const Vector3& inScale) { Scale *= inScale; }
+
+	inline Matrix44 ToMatrix() const
+	{
+		Matrix44 World = Matrix44::Identity;
+		MatrixHelpers::RotateDegrees(World, Rotation);
+		World.V0 *= Scale.X;
+		World.V1 *= Scale.Y;
+		World.V2 *= Scale.Z;
+		World.V3 = Vector4(Position, 1.f);
+		return World;
+	}
+
+	inline Matrix44 ToMatrixNoScale() const
+	{
+		Matrix44 World = Matrix44::Identity;
+		MatrixHelpers::RotateDegrees(World, Rotation);
+		World.V3 = Vector4(Position, 1.f);
+		return World;
+	}
 
 private:
 	Vector3 Position;
@@ -69,8 +90,9 @@ public:
 	void MarkRenderStateValid() { bIsDirty = false; }
 
 protected:
-	explicit Renderable() : bIsDirty(false) {}
+	explicit Renderable() : bIsDirty(true) {}
 
+private:
 	bool bIsDirty;
 };
 

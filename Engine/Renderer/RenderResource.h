@@ -67,10 +67,3 @@ private:
 
 	uint64_t GetHash() const override { return Hash; }
 };
-
-
-class RenderState
-{
-private:
-	explicit RenderState() = default;
-};

@@ -170,28 +170,33 @@ struct RHIResourceDesc
 	ResourceState States = ResourceState::RS_Common;
 	uint16_t Slice = 1;
 	ResourceFlag Flags = ResourceFlag::RFLG_None;
-	uint8_t MipLevels = 0;
+	uint8_t MipLevels = 1;
 	ResourceType Type = ResourceType::RT_Unknown;
 	ResourceFormat Format = ResourceFormat::RF_Unknown;
 
-	static inline RHIResourceDesc Buffer(uint32_t count, uint32_t stride, ResourceFlag inFlags = ResourceFlag::RFLG_None, uint32_t inAlignment = 0)
+	static inline RHIResourceDesc Buffer(uint32_t inWidth, ResourceFlag inFlags = ResourceFlag::RFLG_None, ResourceState inInitialState = ResourceState::RS_Common, uint32_t inAlignment = 0)
 	{
-		return RHIResourceDesc{ { 1,0 }, inAlignment, MathHelpers::RoundUpTo(count * stride, inAlignment), 1, ResourceState::RS_Common, 1, inFlags, 0, ResourceType::RT_Buffer, ResourceFormat::RF_Unknown };
+		return RHIResourceDesc{ { 1,0 }, inAlignment, inWidth, 1, inInitialState, 1, inFlags, 1, ResourceType::RT_Buffer, ResourceFormat::RF_Unknown };
 	}
 
-	static inline RHIResourceDesc Texture1D(uint32_t inWidth, ResourceFormat inFormat, uint16_t inSlice = 1, uint8_t inMipLevels = 0, ResourceFlag inFlags = ResourceFlag::RFLG_None, uint32_t inAlignment = 0)
+	static inline RHIResourceDesc Buffer(uint32_t inCount, uint32_t inStride, ResourceFlag inFlags = ResourceFlag::RFLG_None, ResourceState inInitialState = ResourceState::RS_Common, uint32_t inAlignment = 0)
 	{
-		return RHIResourceDesc{ { 1,0 }, inAlignment, inWidth, 1, ResourceState::RS_Common, inSlice, inFlags, inMipLevels, ResourceType::RT_Texture1D, inFormat };
+		return RHIResourceDesc{ { 1,0 }, inAlignment, inCount * MathHelpers::RoundUpTo(inStride, inAlignment), 1, inInitialState, 1, inFlags, 1, ResourceType::RT_Buffer, ResourceFormat::RF_Unknown };
 	}
 
-	static inline RHIResourceDesc Texture2D(uint32_t inWidth, uint32_t inHeight, ResourceFormat inFormat, uint16_t inSlice = 1, uint8_t inMipLevels = 0, ResourceFlag inFlags = ResourceFlag::RFLG_None, uint32_t inAlignment = 0, const SampleInfo& inSampleInfo = { 1,0 })
+	static inline RHIResourceDesc Texture1D(uint32_t inWidth, ResourceFormat inFormat, uint16_t inSlice = 1, uint8_t inMipLevels = 1, ResourceFlag inFlags = ResourceFlag::RFLG_None, ResourceState inInitialState = ResourceState::RS_Common, uint32_t inAlignment = 0)
 	{
-		return RHIResourceDesc{ inSampleInfo, inAlignment, inWidth, inHeight, ResourceState::RS_Common, inSlice, inFlags, inMipLevels, ResourceType::RT_Texture2D, inFormat };
+		return RHIResourceDesc{ { 1,0 }, inAlignment, inWidth, 1, inInitialState, inSlice, inFlags, inMipLevels, ResourceType::RT_Texture1D, inFormat };
 	}
 
-	static inline RHIResourceDesc Texture3D(uint32_t inWidth, uint32_t inHeight, uint16_t inDepth, ResourceFormat inFormat, uint8_t inMipLevels = 0, ResourceFlag inFlags = ResourceFlag::RFLG_None, uint32_t inAlignment = 0)
+	static inline RHIResourceDesc Texture2D(uint32_t inWidth, uint32_t inHeight, ResourceFormat inFormat, uint16_t inSlice = 1, uint8_t inMipLevels = 1, ResourceFlag inFlags = ResourceFlag::RFLG_None, ResourceState inInitialState = ResourceState::RS_Common, uint32_t inAlignment = 0, const SampleInfo& inSampleInfo = { 1,0 })
 	{
-		return RHIResourceDesc{ { 1,0 }, inAlignment, inWidth, inHeight, ResourceState::RS_Common, inDepth, inFlags, inMipLevels, ResourceType::RT_Texture3D, inFormat };
+		return RHIResourceDesc{ inSampleInfo, inAlignment, inWidth, inHeight, inInitialState, inSlice, inFlags, inMipLevels, ResourceType::RT_Texture2D, inFormat };
+	}
+
+	static inline RHIResourceDesc Texture3D(uint32_t inWidth, uint32_t inHeight, uint16_t inDepth, ResourceFormat inFormat, uint8_t inMipLevels = 1, ResourceFlag inFlags = ResourceFlag::RFLG_None, ResourceState inInitialState = ResourceState::RS_Common, uint32_t inAlignment = 0)
+	{
+		return RHIResourceDesc{ { 1,0 }, inAlignment, inWidth, inHeight, inInitialState, inDepth, inFlags, inMipLevels, ResourceType::RT_Texture3D, inFormat };
 	}
 };
 

@@ -241,7 +241,7 @@ struct VectorType<Type, 4>
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline VectorType(const VectorType<OtherType, 4>& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)), W(static_cast<Type>(Other.W)) {}
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
-	inline VectorType(VectorType<OtherType,4>&& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)) , W(static_cast<Type>(Other.W)) {}
+	inline VectorType(VectorType<OtherType, 4>&& Other) : X(static_cast<Type>(Other.X)), Y(static_cast<Type>(Other.Y)), Z(static_cast<Type>(Other.Z)) , W(static_cast<Type>(Other.W)) {}
 
 	template<typename OtherType, typename = std::enable_if_t<!std::is_same_v<Type, OtherType>>>
 	inline auto& operator=(const VectorType<OtherType,4>& Other)

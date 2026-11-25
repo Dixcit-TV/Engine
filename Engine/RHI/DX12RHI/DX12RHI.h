@@ -24,8 +24,9 @@ public:
 
 	void CompileShader(ShaderInterface* inShader) const override;
 
-	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const override;
-	RenderResource CreateCommittedResource(const RHIResourceDesc& inResourceDesc, void* InitialData, uint32_t Count, uint32_t Stride) const override;
+	RenderResource* CreateCommittedResource(const RHIResourceDesc& inResourceDesc) const override;
+	RenderResource* CreateCommittedResource(const RHIResourceDesc& inResourceDesc, RenderResource* inUploadResource, void* InitialData) const override;
+	RenderResource* CreateCommittedResource(const RHIResourceDesc& inResourceDesc, RenderResource** outUploadResource, void* InitialData) const override;
 
 private:
 	void ThrowIfFailed(HRESULT hr) const
